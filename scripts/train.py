@@ -21,6 +21,8 @@ train_loader = torch.utils.data.DataLoader(datasets, batch_size=1, shuffle=True)
 
 
 model = FCN()
+if args.use_cuda:
+    model.cuda()
 optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-4)
 criterion = nn.CrossEntropyLoss()
 
