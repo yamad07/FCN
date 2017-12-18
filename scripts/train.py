@@ -14,11 +14,12 @@ parser = argparse.ArgumentParser(description='FCN coding by yamad')
 
 parser.add_argument('--use_cuda', default=False,help='gpu or cpu')
 args = parser.parse_args()
-transform = transforms.Compose([transforms.Resize((400, 600)),
+batch_size=2
+transform = transforms.Compose([transforms.Resize((512, 768)),
                                 transforms.ToTensor(),
                                 transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))])
-datasets = ListDataset('../data/images/', '../data/labels/sample.jpg', train=True, transform=transform)
-train_loader = torch.utils.data.DataLoader(datasets, batch_size=1, shuffle=True)
+datasets = ListDataset('../data/images/', batch_size, '../data/labels/sample.jpg',  train=True, transform=transform)
+train_loader = torch.utils.data.DataLoader(datasets, batch_size=batch_size, shuffle=True)
 
 
 model = FCN()
@@ -39,11 +40,10 @@ def train(epoch):
         images = Variable(images)
         labels = Variable(labels)
         optimizer.zero_grad()
-        print("Learning ...")
         pred = model(images)
-        print(pred.size())
         loss = criterion(pred, labels)
-        loss.backwords()
+        print(loss.data[0])
+        loss.backward()
 start_epoch = 0
 for epoch in range(start_epoch, start_epoch+200):
     train(epoch)
