@@ -14,7 +14,8 @@ parser = argparse.ArgumentParser(description='FCN coding by yamad')
 
 parser.add_argument('--use_cuda', default=False,help='gpu or cpu')
 args = parser.parse_args()
-transform = transforms.Compose([transforms.ToTensor(),
+transform = transforms.Compose([transforms.Resize((400, 600)),
+                                transforms.ToTensor(),
                                 transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))])
 datasets = ListDataset('../data/images/', '../data/labels/sample.jpg', train=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(datasets, batch_size=1, shuffle=True)

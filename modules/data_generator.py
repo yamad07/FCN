@@ -26,7 +26,9 @@ class ListDataset(data.Dataset):
         file_name = self.file_names[idx]
         img = Image.open(self.image_root + str(file_name) + ".jpg")
         label = label.convert('L')
+        label = label.resize((400, 600))
         label = np.asarray(label)
+        print(label.shape)
         label = label.reshape(-1)
         label.flags.writeable = True
         label[label == 255] = 1

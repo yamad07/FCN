@@ -30,13 +30,12 @@ class FCN(nn.Module):
         self.conv5_1 = nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.conv5_2 = nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.conv5_3 = nn.Conv2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
-        self.conv5 = nn.Conv2d(512, 512, kernel_size=(2, 2), stride=1, padding=1)
         self.max5 = nn.MaxPool2d(kernel_size=(2, 2), stride=2, return_indices=True)
 
         self.deconv1_1 = nn.ConvTranspose2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.deconv1_2 = nn.ConvTranspose2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.deconv1_3 = nn.ConvTranspose2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
-        self.unpool1 = nn.MaxUnpool2d(2, stride=2)
+        self.unpool1 = nn.MaxUnpool2d((2, 2), stride=2)
 
         self.deconv2_1 = nn.ConvTranspose2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
         self.deconv2_2 = nn.ConvTranspose2d(512, 512, kernel_size=(3, 3), stride=1, padding=1)
@@ -64,9 +63,13 @@ class FCN(nn.Module):
         h, indeces3 = self.max3(self.conv3_3(self.conv3_2(self.conv3_1(h))))
         h, indeces4 = self.max4(self.conv4_3(self.conv4_2(self.conv4_1(h))))
         h, indeces5 = self.max5(self.conv5_3(self.conv5_2(self.conv5_1(h))))
-        
-        
-        h = self.unpool1(self.deconv1_3(self.deconv1_2(self.deconv1_1(h))), indeces5)
+        out5_size = h.size()
+        print(h.size())
+        print(indeces5.size())
+        print(h.size())
+        h = self.deconv1_3(self.deconv1_2(self.deconv1_1(h)))
+        print(h.size())
+        h = self.unpool1(h, output_size=out5_size)
         h = self.unpool2(self.deconv2_3(self.deconv2_2(self.deconv2_1(h))), indeces4)
         h = self.unpool3(self.deconv3_3(self.deconv3_2(self.deconv3_1(h))), indeces3)
         h = self.unpool4(self.deconv4_2(self.deconv4_1(h)), indeces2)
