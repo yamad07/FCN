@@ -14,7 +14,7 @@ parser = argparse.ArgumentParser(description='FCN coding by yamad')
 
 parser.add_argument('--use_cuda', default=False,help='gpu or cpu')
 args = parser.parse_args()
-batch_size=2
+batch_size=1
 transform = transforms.Compose([transforms.Resize((512, 768)),
                                 transforms.ToTensor(),
                                 transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))])
@@ -42,8 +42,8 @@ def train(epoch):
         optimizer.zero_grad()
         pred = model(images)
         loss = criterion(pred, labels)
-        print(loss.data[0])
         loss.backward()
+    print(loss.data[0])
 start_epoch = 0
 for epoch in range(start_epoch, start_epoch+200):
     train(epoch)

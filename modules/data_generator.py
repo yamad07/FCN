@@ -2,6 +2,7 @@ import torch
 import torch.utils.data as data
 from PIL import Image
 import numpy as np
+import glob
 
 
 class ListDataset(data.Dataset):
@@ -20,12 +21,12 @@ class ListDataset(data.Dataset):
         self.train = train
         self.transform = transform
         self.num_samples = 77 
-        self.file_names = list(range(1, self.num_samples + 1)) 
+        self.file_names = glob.glob(image_root)
 
     def __getitem__(self, idx):
         label = Image.open(self.label_root)
         file_name = self.file_names[idx]
-        img = Image.open(self.image_root + str(file_name) + ".jpg")
+        img = Image.open(self.image_root)
         label = label.convert('L')
         label = label.resize((768, 512))
         label = np.asarray(label)
