@@ -20,13 +20,14 @@ class ListDataset(data.Dataset):
         self.label_root = label_root
         self.train = train
         self.transform = transform
-        self.num_samples = 77 
-        self.file_names = glob.glob(image_root)
+        self.file_names = glob.glob(image_root + "*")
+        self.num_samples = len(self.file_names)
+        
 
     def __getitem__(self, idx):
         label = Image.open(self.label_root)
         file_name = self.file_names[idx]
-        img = Image.open(self.image_root)
+        img = Image.open(file_name)
         label = label.convert('L')
         label = label.resize((768, 512))
         label = np.asarray(label)
