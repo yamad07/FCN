@@ -48,6 +48,9 @@ def train(epoch):
         loss.backward()
         optimizer.step()
     print(loss.data[0])
+    if epoch % 50 ==0:
+        torch.save(model.state_dict(), '../weights/weight_'+ str(epoch) +'.pth')
+
 start_epoch = 0
 for epoch in range(start_epoch, start_epoch+200):
     train(epoch)
