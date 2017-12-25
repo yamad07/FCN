@@ -15,13 +15,14 @@ parser = argparse.ArgumentParser(description='FCN coding by yamad')
 parser.add_argument('--use_cuda', default=False,help='gpu or cpu')
 parser.add_argument('--dataroot', required=True,help='gpu or cpu')
 parser.add_argument('--labelroot', required=True,help='gpu or cpu')
+parser.add_argument('--labelfile', required=True,help='gpu or cpu')
 
 args = parser.parse_args()
 batch_size=1
 transform = transforms.Compose([transforms.Resize((512, 768)),
                                 transforms.ToTensor(),
                                 transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))])
-datasets = ListDataset(args.dataroot, batch_size, args.labelroot,  train=True, transform=transform)
+datasets = ListDataset(args.dataroot, batch_size, args.labelfile, args.labelroot,  train=True, transform=transform)
 train_loader = torch.utils.data.DataLoader(datasets, batch_size=batch_size, shuffle=True)
 
 

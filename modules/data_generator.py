@@ -3,10 +3,10 @@ import torch.utils.data as data
 from PIL import Image
 import numpy as np
 import glob
-
+import pandas as pd
 
 class ListDataset(data.Dataset):
-    def __init__(self, image_root, batch_size, label_root, train, transform):
+    def __init__(self, image_root, batch_size, label_file, label_root, train, transform):
         '''
         Args:
             image_root(String) : 実際に使用する画像
@@ -20,21 +20,24 @@ class ListDataset(data.Dataset):
         self.label_root = label_root
         self.train = train
         self.transform = transform
-        self.file_names = glob.glob(image_root + "*")
-        self.num_samples = len(self.file_names)
-        
+        self.label_file = pd.read_csv(label_file) 
+        self.num_samples = self.label_file.shape[0]
 
     def __getitem__(self, idx):
-        label = Image.open(self.label_root)
-        file_name = self.file_names[idx]
-        img = Image.open(file_name)
+        image_label_set = self.label_file.iloc[idx, :]
+        # image
+        
+        img = Image.open(self.image_root + str(image_label_set.file_name) + '.jpg')
+        img = self.transform(img)
+         
+        # label
+        label = Image.open(self.label_root + str(image_label_set.label_name) + '.jpg')
         label = label.convert('L')
         label = label.resize((768, 512))
         label = np.asarray(label)
         label.flags.writeable = True
         label[label == 255] = 1
         label[label != 255] = 0
-        img = self.transform(img)
         label = torch.LongTensor(label)
         return img, label
 
