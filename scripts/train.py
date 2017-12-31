@@ -8,7 +8,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as dset
 import torch
 import argparse
-from modules.data_generator import ListDataset 
+from modules.data_generator import ListDataset
 
 parser = argparse.ArgumentParser(description='FCN coding by yamad')
 
